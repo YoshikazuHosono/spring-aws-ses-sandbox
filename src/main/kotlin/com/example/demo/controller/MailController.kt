@@ -22,40 +22,46 @@ class MailController {
             endpointOverride(URI("http://localhost:8005"))
         }.build()
 
-        val to = Destination.builder().apply {
-            toAddresses("to-hosono@hosono.co.jp")
-        }.build()
+        val to = "to-hosono@hosono.co.jp"
+        val from = "from-hosono@hosono.co.jp"
+//        val from = null
+        val subject = "subject : my name is hosono. ok?"
+        val content = "hello neighbor"
 
-        val subject = Content.builder().apply {
-            data("subject : my name is hosono. ok?")
-        }.build()
-
-        val body = Body.builder().apply {
-            html(Content.builder().apply { data("hello neighbor") }.build())
-        }.build()
-
-        val message = Message.builder().apply {
-            subject(subject)
-            body(body)
-        }.build()
-
-        val emailContent = EmailContent.builder().apply {
-            simple(message)
-        }.build()
-
-        val sendEmailRequest = SendEmailRequest.builder().apply {
-            destination(to)
-            content(emailContent)
-            fromEmailAddress("from-hosono@hosono.co.jp")
-        }.build()
+        val request = mailRequestFactory(to = to, from = from, subject = subject, content = content)
 
         return try {
-            client.sendEmail(sendEmailRequest)
+            client.sendEmail(request)
             "success"
         } catch (e: Exception) {
             e.printStackTrace()
             "error"
         }
+    }
+
+    private fun mailRequestFactory(to: String, from: String?, subject: String, content: String): SendEmailRequest? {
+        return SendEmailRequest.builder().apply {
+            // to
+            val destinationModel = Destination.builder().apply { toAddresses(to) }.build()
+            destination(destinationModel)
+
+            // from
+            fromEmailAddress(from)
+
+            // subject
+            val subjectModel = Content.builder().apply { data(subject) }.build()
+
+            // body
+            val bodyContent = Content.builder().data(content).build()
+            val bodyModel = Body.builder().html(bodyContent).build()
+
+            // message ( subject + body )
+            val messageModel = Message.builder().subject(subjectModel).body(bodyModel).build()
+
+            // email ( message )
+            val emailContentModel = EmailContent.builder().simple(messageModel).build()
+            content(emailContentModel)
+        }.build()
     }
 
 }
