@@ -8,7 +8,7 @@ class MailController {
 
     @GetMapping("/mail")
     fun sendMail(): String {
-        return "Hello hosono ultimate world !!"
+        return "Hello hosono ultimate world 2 !!"
     }
 
 }
