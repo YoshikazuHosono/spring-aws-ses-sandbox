@@ -26,7 +26,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // aws
-    implementation(platform("software.amazon.awssdk:bom:2.15.0"))
+    implementation(platform("software.amazon.awssdk:bom:2.19.14"))
     implementation("software.amazon.awssdk:sesv2")
 
     // test
